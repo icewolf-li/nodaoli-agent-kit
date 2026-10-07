@@ -6,7 +6,7 @@
 
 ```text
 rules/                  通用协作、目录、编码、Git、项目记忆规则
-skills/                 你自行选择的完整 Skill 目录（目前为空）
+skills/                 你自行选择的完整 Skill 目录（已收录 project-memory）
 stacks/                 可选技术栈规则（目前只预留目录）
 templates/              AGENTS.md / CLAUDE.md 入口与记忆模板
 scripts/install.ps1     PowerShell 公网入口
@@ -16,7 +16,7 @@ scripts/test_install.py 安装与更新行为测试，使用临时示例 Skill
 docs/                   维护说明
 ```
 
-第一版规则根据已确认的方向编写：中文协作、沿用项目结构、根目录保持整洁、保存 WorkBuddy 风格项目记忆、规则与 Skill 分开维护。不假定具体框架、版本或未确认的个人偏好。
+第一版规则根据已确认的方向编写：中文协作、沿用项目结构、根目录保持整洁、保存 按日记录的项目记忆、规则与 Skill 分开维护。不假定具体框架、版本或未确认的个人偏好。
 
 ## 公网一键安装
 
@@ -68,8 +68,9 @@ my-project/
 │  └─ backups/                更新前的备份，自动加入项目 .gitignore
 ├─ .agents/skills/            Codex Skill 副本
 ├─ .claude/skills/            Claude Code Skill 副本
-└─ .workbuddy/
+└─ .memory/
    ├─ README.md
+   ├─ project-overview.md     长期概览与索引
    ├─ decisions.md
    ├─ architecture.md
    ├─ TODO.md
@@ -101,7 +102,9 @@ SKILL.md 需要包含 `name` 与 `description` frontmatter。目录名用小写�
 curl -fsSL https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.sh | bash -s -- --skills your-skill,another-skill
 ```
 
-加入并推送源仓库后才能通过公网安装。目前 `skills/` 没有任何 Skill，默认安装也只会创建空目录。
+加入并推送源仓库后才能通过公网安装。当前已收录用户选择的 `project-memory`，基于 [ArcticZvan/project-memory](https://github.com/ArcticZvan/project-memory) 改为 `.memory/` 记忆目录，保留上游 MIT 许可证与来源记录，适用于本仓库的 Codex / Claude Code 入口。
+
+首次默认会安装它。已安装过且之前没有选择 Skills 的项目，需要显式传 `-Update -Skill project-memory` 或 `--update --skills project-memory`（若已有其他 Skill，这里应传完整列表）。Skill 会在会话开始读概览与近期日志，在有意义的工作完成后追加日记，并追踪被替代或错误的旧结论；细节见 [来源与适配说明](docs/third-party/project-memory.md)。
 
 ## 更新与项目定制
 
@@ -118,7 +121,8 @@ curl -fsSL https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scri
 - 更新默认沿用 `.agent/kit.json` 的 repo、ref、agent、skill 和 stack 选择，**不会自动加入新 Skill**。
 - 改选择时显式传参，例如 `-Update -Skill new-skill`；此参数是完整选择列表，并非追加列表。
 - AGENTS.md / CLAUDE.md 只替换 `<!-- agent-kit:start -->` 到 `<!-- agent-kit:end -->`；外部内容按原字节保留。缺失半边标记或标记重复时停止。
-- 不覆盖已有 `.workbuddy/` 记忆、`.agent/project.md`、无关规则或自定义 Skills。
+- 不覆盖已有 `.memory/` 记忆、`.agent/project.md`、无关规则或自定义 Skills。
+- 若旧项目使用了其他记忆目录，将已有记忆合并到 `.memory/` 后再继续使用；安装器不自动移动旧目录。
 - 未受管的同名规则或 Skill 文件发生冲突时停止，不擅自接管。
 - 已受管文件被本地修改且与源仓库不同，默认停止。先回源仓库合并；确定要覆盖时传 `-Force` / `--force`，旧文件会备份。
 - 所有将被覆盖的文件都会先备份到 `.agent/backups/<UTC时间>/`。备份保留，不自动清理。

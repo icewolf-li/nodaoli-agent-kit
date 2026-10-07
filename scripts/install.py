@@ -193,7 +193,7 @@ def install(source, root, args, previous, archive_hash):
 
     initial = {}
     for name, data in collect(templates / 'memory').items():
-        relative = '.workbuddy/' + name
+        relative = '.memory/' + name
         if not safe_target(root, relative).exists():
             initial[relative] = data
     owned = previous.get('files', {})

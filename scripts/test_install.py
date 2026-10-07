@@ -79,7 +79,7 @@ class InstallerTest(unittest.TestCase):
         self.assertTrue(entry.read_bytes().startswith(custom))
         entry.write_bytes(entry.read_bytes() + b'\r\n# User suffix\r\n')
         before = entry.read_bytes()
-        memory = self.project / '.workbuddy/TODO.md'
+        memory = self.project / '.memory/TODO.md'
         memory.write_bytes(b'# Actual user TODO\n')
         self.run_install('--update')
         self.assertEqual(entry.read_bytes(), before)

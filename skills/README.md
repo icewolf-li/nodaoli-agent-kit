@@ -1,6 +1,8 @@
 # 精选 Skills
 
-这里先留空。只把你确定要复用的 Skill 放进来，不自动扫描或导入电脑上的已安装 Skills。
+这里只收录你确定要复用的 Skill，不自动扫描或导入电脑上的已安装 Skills。
+
+已收录 `project-memory`：基于 ArcticZvan/project-memory，记忆位置统一为项目根目录 `.memory/`，保留每日记录、概览与纠错追踪。来源与改动见 [维护说明](../docs/third-party/project-memory.md)。
 
 每个 Skill 使用独立目录，目录名建议为小写英文加连字符：
 
