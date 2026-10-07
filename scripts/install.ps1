@@ -43,7 +43,7 @@ try {
         if (-not $Repo) { $Repo = $kitPrevious.repo }
         if (-not $Ref) { $Ref = $kitPrevious.ref }
     }
-    if (-not $Repo) { $Repo = 'nodaoli/nodaoli-agent-kit' }
+    if (-not $Repo) { $Repo = 'icewolf-li/nodaoli-agent-kit' }
     if (-not $Ref) { $Ref = 'main' }
     if ($Repo -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$') { throw 'Repo must be owner/name.' }
     if ($Ref -notmatch '^[A-Za-z0-9_./-]+$' -or $Ref.Contains('..')) { throw 'Invalid Git ref.' }

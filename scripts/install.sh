@@ -38,7 +38,7 @@ kit_metadata=$(python3 - "$kit_project" "$kit_repo" "$kit_ref" <<'PY'
 import json, pathlib, re, sys
 path = pathlib.Path(sys.argv[1]).expanduser() / '.agent/kit.json'
 old = json.loads(path.read_text(encoding='utf-8-sig')) if path.is_file() else {}
-repo = sys.argv[2] or old.get('repo', 'nodaoli/nodaoli-agent-kit')
+repo = sys.argv[2] or old.get('repo', 'icewolf-li/nodaoli-agent-kit')
 ref = sys.argv[3] or old.get('ref', 'main')
 if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', repo):
     raise SystemExit('Repo must be owner/name')

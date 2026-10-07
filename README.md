@@ -2,6 +2,43 @@
 
 个人 Agent 规则与精选 Skills 的源仓库。新项目只下载并安装需要的文件，不需要克隆这个仓库，不写入全局 Agent 配置。
 
+## 一键使用
+
+先进入**目标项目根目录**，再复制执行以下任意一种命令。需要 Python **3.9+**，无需 Git、pip 或提前克隆仓库。
+
+PowerShell（5.1+，推荐 7）：
+
+```powershell
+irm https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.ps1 | iex
+```
+
+curl（Bash）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.sh | bash
+```
+
+wget（Bash）：
+
+```bash
+wget -qO- https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.sh | bash
+```
+
+默认从公开仓库 [icewolf-li/nodaoli-agent-kit](https://github.com/icewolf-li/nodaoli-agent-kit) 的 `main` 下载。首次安装包括 Codex / Claude Code 入口与全部精选 Skills；在已安装的项目重复运行会按原选择更新。
+
+脚本流程：下载共享安装器与仓库 ZIP 到临时目录 → 将规则、Skills 和入口写入当前项目 → 清理下载目录。
+
+| 文件或目录 | 首次执行 | 再次执行 |
+| --- | --- | --- |
+| `AGENTS.md`、`CLAUDE.md` | 创建或追加管理区块 | 只替换管理区块，保留项目说明 |
+| `.agent/rules/`、选用的 `.agent/stack.md` | 复制规则 | 更新受管文件；本地修改有冲突时停止 |
+| `.agents/skills/`、`.claude/skills/` | 复制选中的完整 Skill | 按原选择更新，保留无关 Skill |
+| `.memory/` | 创建缺失的记忆模板 | 保留已有内容，仅补缺失模板 |
+| `.agent/kit.json` | 记录来源与选择 | 更新安装记录 |
+| `.gitignore` | 追加备份目录的忽略区块 | 更新该区块，保留原规则 |
+
+将被覆盖的文件会先备份到 `.agent/backups/`。具体更新与定制方法见下方。
+
 ## 当前内容
 
 ```text
@@ -16,40 +53,20 @@ scripts/test_install.py 安装与更新行为测试，使用临时示例 Skill
 docs/                   维护说明
 ```
 
-第一版规则根据已确认的方向编写：中文协作、沿用项目结构、根目录保持整洁、保存 按日记录的项目记忆、规则与 Skill 分开维护。不假定具体框架、版本或未确认的个人偏好。
+第一版规则根据已确认的方向编写：中文协作、沿用项目结构、根目录保持整洁、保存按日记录的项目记忆、规则与 Skill 分开维护。不假定具体框架、版本或未确认的个人偏好。
 
-## 公网一键安装
+## 指定安装参数
 
-前提：将本仓库发布为公开 GitHub 仓库。以下示例按 `nodaoli/nodaoli-agent-kit`、`main` 编写；若实际仓库不同，需要替换 URL 并传 `-Repo` / `--repo`。**本地初始化不代表下面的公网 URL 已经发布或可用。**
-
-需要 Python **3.9+**（PATH 中的 python3、python 或 Windows py），无需 pip 或 Git。Windows 支持 PowerShell 5.1+，推荐 PowerShell 7；Linux/macOS 使用 Bash 与 curl 或 wget。
-
-在目标项目目录运行 PowerShell：
+PowerShell 用 ScriptBlock 调用下载的脚本：
 
 ```powershell
-irm https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.ps1 | iex
-```
-
-`irm` 是 `Invoke-RestMethod`，`iex` 是 `Invoke-Expression`。执行后会下载共享安装器和仓库 ZIP，安装所需文件，再清理下载目录。
-
-需要参数时，用 ScriptBlock 调用下载的脚本：
-
-```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.ps1))) -ProjectPath 'D:\code\my-project' -NoSkills
-```
-
-curl / wget（先进入目标项目）：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.sh | bash
-
-wget -qO- https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.sh | bash
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.ps1))) -ProjectPath 'D:\code\my-project' -NoSkills
 ```
 
 带参数：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.sh | bash -s -- --project './my-project' --no-skills
+curl -fsSL https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.sh | bash -s -- --project './my-project' --no-skills
 ```
 
 默认安装 Codex 与 Claude Code 两个入口。`-Agents codex` / `--agents codex` 可以只安装 Codex；`claude` 同理。
@@ -95,11 +112,11 @@ SKILL.md 需要包含 `name` 与 `description` frontmatter。目录名用小写�
 首次默认安装仓库中全部精选 Skills。只选部分：
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.ps1))) -Skill your-skill,another-skill
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.ps1))) -Skill your-skill,another-skill
 ```
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.sh | bash -s -- --skills your-skill,another-skill
+curl -fsSL https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.sh | bash -s -- --skills your-skill,another-skill
 ```
 
 加入并推送源仓库后才能通过公网安装。当前已收录用户选择的 `project-memory`，基于 [ArcticZvan/project-memory](https://github.com/ArcticZvan/project-memory) 改为 `.memory/` 记忆目录，保留上游 MIT 许可证与来源记录，适用于本仓库的 Codex / Claude Code 入口。
@@ -111,14 +128,15 @@ curl -fsSL https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scri
 在项目里重复运行安装命令即可更新。也可显式使用 `-Update` / `--update`，要求项目已安装：
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.ps1))) -Update
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.ps1))) -Update
 ```
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.sh | bash -s -- --update
+curl -fsSL https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.sh | bash -s -- --update
 ```
 
 - 更新默认沿用 `.agent/kit.json` 的 repo、ref、agent、skill 和 stack 选择，**不会自动加入新 Skill**。
+- 如果旧项目的安装记录仍指向旧仓库地址，更新时额外传 `-Repo icewolf-li/nodaoli-agent-kit` / `--repo icewolf-li/nodaoli-agent-kit`，这次成功安装后会记录新来源。
 - 改选择时显式传参，例如 `-Update -Skill new-skill`；此参数是完整选择列表，并非追加列表。
 - AGENTS.md / CLAUDE.md 只替换 `<!-- agent-kit:start -->` 到 `<!-- agent-kit:end -->`；外部内容按原字节保留。缺失半边标记或标记重复时停止。
 - 不覆盖已有 `.memory/` 记忆、`.agent/project.md`、无关规则或自定义 Skills。
@@ -153,15 +171,14 @@ python scripts/test_install.py
 bash scripts/install.sh --source "$PWD" --project "$PWD/.tmp/example-project" --no-skills
 ```
 
-## 发布源仓库
+## 维护与发布更新
 
-在 GitHub 创建公开的空仓库后，将这个源仓库提交并推送。下面是手动发布示例，不是安装前置步骤：
+公开仓库是 [icewolf-li/nodaoli-agent-kit](https://github.com/icewolf-li/nodaoli-agent-kit)。修改源规则、Skills 或脚本后，审查变更，再提交推送到 `main`；公网命令读取的是已经推送的版本。
 
 ```powershell
 git add .
-git commit -m "Initialize personal agent kit"
-git remote add origin https://github.com/nodaoli/nodaoli-agent-kit.git
+git commit -m "Update personal agent kit"
 git push -u origin main
 ```
 
-若已有 origin，则使用 `git remote set-url origin <实际地址>`。发布前审查 diff、Skill 来源和个人信息。源仓库每次更新后提交推送，业务项目再运行公网更新命令。
+当前 `origin` 已指向该仓库。换地址时使用 `git remote set-url origin <实际地址>`。源仓库每次更新后提交推送，业务项目再运行公网更新命令。

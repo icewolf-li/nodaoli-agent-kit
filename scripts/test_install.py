@@ -286,14 +286,14 @@ class InstallerTest(unittest.TestCase):
             "[IO.File]::WriteAllText($env:KIT_REQUEST_LOG, $Uri) }; "
             "New-Item -ItemType Directory -Path $env:KIT_PROJECT | Out-Null; "
             "Set-Location -LiteralPath $env:KIT_PROJECT; "
-            "irm 'https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.ps1' | iex"
+            "irm 'https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.ps1' | iex"
         )
         result = subprocess.run([pwsh, '-NoProfile', '-Command', command],
                                 capture_output=True, text=True, encoding='utf-8', env=env)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue((self.project / 'AGENTS.md').is_file())
         self.assertEqual(requests.read_text(),
-                         'https://raw.githubusercontent.com/nodaoli/nodaoli-agent-kit/main/scripts/install.py')
+                         'https://raw.githubusercontent.com/icewolf-li/nodaoli-agent-kit/main/scripts/install.py')
 
 
 if __name__ == '__main__':

@@ -276,7 +276,7 @@ def main():
             raise ValueError('Invalid installation manifest source')
     if args.update and not previous:
         raise ValueError('No installation found; run without --update first')
-    args.repo = args.repo or previous.get('repo', 'nodaoli/nodaoli-agent-kit')
+    args.repo = args.repo or previous.get('repo', 'icewolf-li/nodaoli-agent-kit')
     args.ref = args.ref or previous.get('ref', 'main')
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', args.repo):
         raise ValueError('Repository must be owner/name')
